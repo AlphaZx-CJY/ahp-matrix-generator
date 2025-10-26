@@ -7,10 +7,10 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu, windows, macos]
 
     steps:
     - name: Checkout code
@@ -47,11 +47,19 @@ jobs:
       with:
         path: artifacts
 
+    - name: Check artifacts content
+      run: ls -R artifacts
+
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          artifacts/ahp-generator-*
+          artifacts/*
         generate_release_notes: true
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
+        body: 'Auto release script'
+        draft: false
+        prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
