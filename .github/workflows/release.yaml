@@ -34,7 +34,7 @@ jobs:
         pyinstaller --onefile --name ahp-generator ahp_generator.py
     
     - name: Upload artifacts
-      uses: action/upload-artifact@v4
+      uses: actions/upload-artifact@v4
       with:
         name: ahp-generator-${{ matrix.os }}
         path: dist/
