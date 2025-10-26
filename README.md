@@ -16,7 +16,7 @@ A Python-based command-line tool for generating AHP (Analytic Hierarchy Process)
 
 ### Prerequisites
 
-- Python 3.6+
+- Python 3.11+
 - pip package manager
 
 ### Installation Steps
