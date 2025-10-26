@@ -44,6 +44,8 @@ pip install typer numpy
 Generate an n×n judgment matrix:
 ```bash
 python ahp_generator.py [DIMENSION] 
+# or
+./ahp-generator[.exe] [DIMENSION]
 ```
 
 Example (generate a 4×4 matrix):

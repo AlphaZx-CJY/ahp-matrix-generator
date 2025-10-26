@@ -42,6 +42,8 @@ pip install typer numpy
 生成一个 n×n 的判断矩阵：
 ```bash
 python ahp_generator.py [维度] 
+# 或
+./aph-generator[.exe] [纬度]
 ```
 
 示例（生成 4×4 矩阵）：
