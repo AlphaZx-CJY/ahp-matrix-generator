@@ -42,10 +42,14 @@ pip install typer numpy
 ### Basic Usage
 
 Generate an n×n judgment matrix:
-bash python ahp_generator.py [DIMENSION] 
+```bash
+python ahp_generator.py [DIMENSION] 
+```
 
 Example (generate a 4×4 matrix):
-bash python ahp_generator.py 4 
+```bash
+python ahp_generator.py 4 
+```
 
 ### Optional Parameters
 
@@ -55,7 +59,9 @@ bash python ahp_generator.py 4
 | --cr-threshold | Acceptable consistency ratio threshold | 0.1 |
 
 Example (generate a 5×5 matrix, max 200 trials, CR threshold 0.15):
-bash python ahp_generator.py 5 --max-trials 200 --cr-threshold 0.15 
+```bash
+python ahp_generator.py 5 --max-trials 200 --cr-threshold 0.15 
+```
 
 ### Output Example
 

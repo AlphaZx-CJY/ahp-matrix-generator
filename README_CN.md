@@ -40,10 +40,14 @@ pip install typer numpy
 ### 基本用法
 
 生成一个 n×n 的判断矩阵：
-bash python ahp_generator.py [维度] 
+```bash
+python ahp_generator.py [维度] 
+```
 
 示例（生成 4×4 矩阵）：
-bash python ahp_generator.py 4 
+```bash
+python ahp_generator.py 4 
+```
 
 ### 可选参数
 
@@ -53,7 +57,9 @@ bash python ahp_generator.py 4
 | --cr-threshold | 可接受的一致性比率阈值 | 0.1 |
 
 示例（生成 5×5 矩阵，最大尝试 200 次，CR 阈值 0.15）：
-bash python ahp_generator.py 5 --max-trials 200 --cr-threshold 0.15 
+```bash
+python ahp_generator.py 5 --max-trials 200 --cr-threshold 0.15 
+```
 
 ### 输出示例
 
