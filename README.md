@@ -43,17 +43,18 @@ pip install typer numpy
 
 Generate an n×n judgment matrix:
 ```bash
-python ahp_generator.py [DIMENSION] 
+python ahp_generator.py generate [DIMENSION] 
 # or
-./ahp-generator[.exe] [DIMENSION]
+./ahp-generator[.exe] generate [DIMENSION]
 ```
 
 Example (generate a 4×4 matrix):
 ```bash
-python ahp_generator.py 4 
+python ahp_generator.py generate 4 
 ```
 
 ### Optional Parameters
+
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
@@ -62,8 +63,33 @@ python ahp_generator.py 4
 
 Example (generate a 5×5 matrix, max 200 trials, CR threshold 0.15):
 ```bash
-python ahp_generator.py 5 --max-trials 200 --cr-threshold 0.15 
+python ahp_generator.py generate 5 --max-trials 200 --cr-threshold 0.15 
 ```
+
+### Other Commands
+
+#### 1. Check Matrix Consistency
+
+Check if a given matrix meets AHP consistency requirements. You can input a matrix as a string or a file:
+
+```bash
+# String input (semicolon for rows, comma for columns)
+python ahp_generator.py check-matrix --matrix "1,2,3;0.5,1,4;0.333,0.25,1"
+
+# File input
+python ahp_generator.py check-matrix --matrix matrix.txt
+# matrix.txt content example: 1,2,3;0.5,1,4;0.333,0.25,1
+```
+
+#### 2. Generate Matrix by Factors
+
+Generate a judgment matrix by specifying the order of factors (comma separated):
+
+```bash
+python ahp_generator.py generate-by-factors --factors "Price,Quality,Service"
+```
+
+Output will show the factor order, generated matrix, weights, and consistency ratio.
 
 ### Output Example
 

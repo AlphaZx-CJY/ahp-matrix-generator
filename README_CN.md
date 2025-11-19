@@ -41,14 +41,14 @@ pip install typer numpy
 
 生成一个 n×n 的判断矩阵：
 ```bash
-python ahp_generator.py [维度] 
+python ahp_generator.py generate [维度] 
 # 或
-./aph-generator[.exe] [纬度]
+./aph-generator[.exe] generate [纬度]
 ```
 
 示例（生成 4×4 矩阵）：
 ```bash
-python ahp_generator.py 4 
+python ahp_generator.py generate 4 
 ```
 
 ### 可选参数
@@ -60,8 +60,33 @@ python ahp_generator.py 4
 
 示例（生成 5×5 矩阵，最大尝试 200 次，CR 阈值 0.15）：
 ```bash
-python ahp_generator.py 5 --max-trials 200 --cr-threshold 0.15 
+python ahp_generator.py generate 5 --max-trials 200 --cr-threshold 0.15 
 ```
+
+### 其他命令
+
+#### 1. 检查判断矩阵是否合规
+
+检查输入的矩阵是否符合 AHP 判断矩阵要求. 你可以输入一个矩阵或文件:
+
+```bash
+# String input (semicolon for rows, comma for columns)
+python ahp_generator.py check-matrix --matrix "1,2,3;0.5,1,4;0.333,0.25,1"
+
+# File input
+python ahp_generator.py check-matrix --matrix matrix.txt
+# matrix.txt content example: 1,2,3;0.5,1,4;0.333,0.25,1
+```
+
+#### 2. Generate Matrix by Factors
+
+根据输入的因素顺序生成一个判断矩阵（用英文逗号分隔）:
+
+```bash
+python ahp_generator.py generate-by-factors --factors "Price,Quality,Service"
+```
+
+输出显示因素顺序，生成的判断矩阵，权重和一致性判断。
 
 ### 输出示例
 

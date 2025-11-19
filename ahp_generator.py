@@ -1,5 +1,4 @@
 from typing import List, Tuple
-from fractions import Fraction
 import random
 import typer
 import numpy as np
@@ -139,6 +138,135 @@ def generate(
     typer.echo("\n权重向量:")
     for i, weight in enumerate(best_weights):
         typer.echo(f"因素 {i+1}: {weight:.4f}")
+
+    typer.echo("\n最大特征值对应的特征向量:")
+    typer.echo(format_vector(best_lambda_list))
+    typer.echo(f"\n最大特征值 (λ_max): {best_lambda_max:.4f}")
+
+    typer.echo(f"\n一致性比率 (CR): {best_cr:.4f}")
+
+    if best_cr > cr_threshold:
+        typer.echo(typer.style(
+            f"警告: CR > {cr_threshold}，矩阵的一致性不可接受!",
+            fg=typer.colors.RED, bold=True
+        ))
+    else:
+        typer.echo(typer.style(
+            f"CR <= {cr_threshold}，矩阵的一致性可接受",
+            fg=typer.colors.GREEN
+        ))
+
+
+
+# 新增命令：检查输入矩阵的一致性
+@app.command()
+def check_matrix(
+    matrix: str = typer.Option(..., help="输入判断矩阵，格式如 '1,2,3;0.5,1,4;0.333,0.25,1' 或文件路径"),
+    cr_threshold: float = typer.Option(0.1, help="可接受的一致性比率阈值")
+):
+    """
+    检查输入的判断矩阵是否符合AHP一致性要求
+    示例: python ahp_generator.py check-matrix --matrix "1,2,3;0.5,1,4;0.333,0.25,1"
+    """
+    import os
+    # 判断输入是文件还是字符串
+    if os.path.isfile(matrix):
+        with open(matrix, 'r', encoding='utf-8') as f:
+            content = f.read().strip()
+    else:
+        content = matrix.strip()
+
+    # 解析矩阵
+    try:
+        rows = content.split(';')
+        parsed_matrix = [list(map(float, row.split(','))) for row in rows]
+    except Exception as e:
+        typer.echo(typer.style(f"矩阵解析失败: {e}", fg=typer.colors.RED, bold=True))
+        raise typer.Exit(code=1)
+
+    n = len(parsed_matrix)
+    for row in parsed_matrix:
+        if len(row) != n:
+            typer.echo(typer.style("矩阵必须为 n x n 方阵！", fg=typer.colors.RED, bold=True))
+            raise typer.Exit(code=1)
+
+    # 计算一致性
+    weights, lambda_list, lambda_max, cr = calculate_weights(parsed_matrix)
+
+    typer.echo("\n输入的判断矩阵:")
+    typer.echo(format_matrix(parsed_matrix))
+
+    typer.echo("\n权重向量:")
+    for i, weight in enumerate(weights):
+        typer.echo(f"因素 {i+1}: {weight:.4f}")
+
+    typer.echo("\n最大特征值对应的特征向量:")
+    typer.echo(format_vector(lambda_list))
+    typer.echo(f"\n最大特征值 (λ_max): {lambda_max:.4f}")
+
+    typer.echo(f"\n一致性比率 (CR): {cr:.4f}")
+
+    if cr > cr_threshold:
+        typer.echo(typer.style(
+            f"警告: CR > {cr_threshold}，矩阵的一致性不可接受!",
+            fg=typer.colors.RED, bold=True
+        ))
+    else:
+        typer.echo(typer.style(
+            f"CR <= {cr_threshold}，矩阵的一致性可接受",
+            fg=typer.colors.GREEN
+        ))
+
+
+
+# 新增命令：根据用户输入因素顺序生成判断矩阵
+@app.command()
+def generate_by_factors(
+    factors: str = typer.Option(..., help="输入因素顺序，逗号分隔，如 '价格,质量,服务'"),
+    max_trials: int = typer.Option(100, help="最大尝试次数以满足一致性要求"),
+    cr_threshold: float = typer.Option(0.1, help="可接受的一致性比率阈值")
+):
+    """
+    根据用户输入的因素顺序生成AHP判断矩阵
+    示例: python ahp_generator.py generate-by-factors --factors "价格,质量,服务"
+    """
+    factor_list = [f.strip() for f in factors.split(',') if f.strip()]
+    n = len(factor_list)
+    if n < 2:
+        typer.echo(typer.style("因素数量必须大于1！", fg=typer.colors.RED, bold=True))
+        raise typer.Exit(code=1)
+    if n > 15:
+        typer.echo("警告: 维度大于15时RI值将使用近似值，结果可能不够准确")
+
+    best_matrix = None
+    best_weights = None
+    best_cr = float('inf')
+    best_lambda_list = None
+
+    # 尝试生成满足一致性要求的矩阵
+    for _ in range(max_trials):
+        matrix = generate_ahp_matrix(n)
+        weights, lambda_list, labmda_max, cr = calculate_weights(matrix)
+        if cr < best_cr:
+            best_cr = cr
+            best_matrix = matrix
+            best_weights = weights
+            best_lambda_list = lambda_list
+            best_lambda_max = labmda_max
+        if cr <= cr_threshold:
+            break
+
+    # 输出结果
+    typer.echo("\n因素顺序:")
+    for i, factor in enumerate(factor_list):
+        typer.echo(f"{i+1}. {factor}")
+
+    typer.echo("\n判断矩阵:")
+    typer.echo(format_matrix(best_matrix))
+
+    typer.echo("\n权重向量:")
+    for i, (factor, weight) in enumerate(zip(factor_list, best_weights)):
+        typer.echo(f"{factor}: {weight:.4f}")
 
     typer.echo("\n最大特征值对应的特征向量:")
     typer.echo(format_vector(best_lambda_list))
